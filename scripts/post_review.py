@@ -17,7 +17,7 @@ import urllib.request
 import urllib.error
 
 COMMENT_PATTERN = re.compile(
-    r"^####\s+\d+\.\s+\[([A-Z_]+)\]\s+`([^:]+):(\d+)`",
+    r"^####\s+\d+\.\s+\[([A-Z_]+)\]\s+`?([^:`\s]+):(\d+)`?",
     re.MULTILINE,
 )
 REPO_PATTERN = re.compile(r"^[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+$")
@@ -175,6 +175,14 @@ def post_review(repo, pr_number, commit_sha, token, review_text):
     review_text = extract_review(review_text)
     review_text = sanitize_review_text(review_text)
     comments = parse_review(review_text)
+
+    # Debug: show what was extracted
+    print(f"Extracted review length: {len(review_text)} chars")
+    print(f"Parsed {len(comments)} comments from review text")
+    if not comments:
+        # Show first 500 chars to help debug
+        print(f"Review text preview:\n{review_text[:500]}")
+
     summary = build_summary(review_text, len(comments))
 
     # Get valid diff lines to filter out comments on non-diff lines

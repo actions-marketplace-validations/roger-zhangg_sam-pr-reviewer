@@ -23,6 +23,28 @@ COMMENT_PATTERN = re.compile(
 REPO_PATTERN = re.compile(r"^[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+$")
 API_BASE = "https://api.github.com"
 
+ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]")
+
+
+def strip_ansi(text):
+    """Remove ANSI escape codes from text."""
+    return ANSI_ESCAPE.sub("", text)
+
+
+def extract_review(text):
+    """Extract the final '## Code Review Results' section from kiro-cli output.
+
+    Kiro outputs intermediate tool calls and thinking before the final review.
+    We only want the last review section.
+    """
+    marker = "## Code Review Results"
+    idx = text.rfind(marker)
+    if idx != -1:
+        return text[idx:]
+    # Fallback: return everything if no marker found
+    return text
+
+
 SECRET_PATTERNS = [
     re.compile(r"ghp_[A-Za-z0-9]{36,}"),                          # GitHub PAT
     re.compile(r"ghs_[A-Za-z0-9]{36,}"),                          # GitHub App token
@@ -149,6 +171,8 @@ def get_diff_lines(token, repo, pr_number, commit_sha):
 
 def post_review(repo, pr_number, commit_sha, token, review_text):
     """Post a PR review with inline comments."""
+    review_text = strip_ansi(review_text)
+    review_text = extract_review(review_text)
     review_text = sanitize_review_text(review_text)
     comments = parse_review(review_text)
     summary = build_summary(review_text, len(comments))

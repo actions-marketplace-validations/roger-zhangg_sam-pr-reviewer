@@ -215,12 +215,19 @@ def post_review(repo, pr_number, commit_sha, token, review_text):
         "comments": inline_comments,
     }
 
-    github_api(
-        "POST",
-        f"/repos/{repo}/pulls/{pr_number}/reviews",
-        token,
-        review_data,
-    )
+    try:
+        github_api(
+            "POST",
+            f"/repos/{repo}/pulls/{pr_number}/reviews",
+            token,
+            review_data,
+        )
+    except urllib.error.HTTPError as e:
+        if e.code == 403:
+            print("::warning::Cannot post review — token lacks write access. "
+                  "This is expected for fork PRs to upstream repos.", file=sys.stderr)
+            return
+        raise
 
     total = len(inline_comments) + len(fallback_comments)
     print(f"Posted review: {len(inline_comments)} inline, {len(fallback_comments)} in summary, {total} total")

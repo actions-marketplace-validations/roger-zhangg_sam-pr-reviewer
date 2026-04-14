@@ -28,6 +28,12 @@ fi
 echo "Reviewing PR #${PR_NUMBER} on ${REPO_FULL}"
 echo "Diff: ${BASE_SHA}..${HEAD_SHA}"
 
+# --- Check for required API key ---
+if [ -z "${KIRO_API_KEY:-}" ]; then
+  echo "::warning::KIRO_API_KEY secret is not set. Skipping AI code review."
+  exit 0
+fi
+
 # --- Install Kiro CLI with integrity check ---
 echo "Installing Kiro CLI..."
 KIRO_INSTALL_SCRIPT=$(mktemp)

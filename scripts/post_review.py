@@ -46,6 +46,7 @@ def extract_review(text):
 
 
 SECRET_PATTERNS = [
+    re.compile(r"ksk_[A-Za-z0-9]{20,}"),                          # Kiro API key
     re.compile(r"ghp_[A-Za-z0-9]{36,}"),                          # GitHub PAT
     re.compile(r"ghs_[A-Za-z0-9]{36,}"),                          # GitHub App token
     re.compile(r"gho_[A-Za-z0-9]{36,}"),                          # GitHub OAuth token

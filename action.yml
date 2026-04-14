@@ -8,7 +8,7 @@ branding:
 
 inputs:
   github_token:
-    description: 'GitHub token for posting PR reviews. Use ${{ secrets.GITHUB_TOKEN }} or a PAT with pull_request write permission.'
+    description: 'GitHub token for posting PR reviews.'
     required: true
   kiro_api_key:
     description: 'Kiro CLI API key for headless mode. Store as a repository secret.'

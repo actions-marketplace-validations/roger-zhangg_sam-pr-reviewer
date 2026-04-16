@@ -31,24 +31,6 @@ def strip_ansi(text):
     return ANSI_ESCAPE.sub("", text)
 
 
-# Pattern for code blocks that lost their fences during terminal rendering.
-# Kiro renders ```python\ncode\n``` as just "python\ncode\n" with possible
-# surrounding box-drawing characters (━).
-BARE_CODE_BLOCK = re.compile(
-    r"(?m)^(python|javascript|typescript|java|yaml|bash|json|go|rust|ruby|c|cpp|csharp|shell|sql|html|css|xml|toml|hcl|dockerfile)\n(.*?)(?=\n━|\n\n[A-Z]|\n####|\Z)",
-    re.DOTALL,
-)
-
-
-def restore_code_fences(text):
-    """Re-wrap bare code blocks that lost their triple-backtick fences."""
-    def replacer(m):
-        lang = m.group(1)
-        code = m.group(2).rstrip()
-        return f"```{lang}\n{code}\n```"
-    return BARE_CODE_BLOCK.sub(replacer, text)
-
-
 def extract_review(text):
     """Extract the final '## Code Review Results' section from kiro-cli output.
 
@@ -241,7 +223,16 @@ def dismiss_previous_reviews(repo, pr_number, token):
                         {"message": "Superseded by new review."},
                     )
                 except urllib.error.HTTPError:
-                    pass
+                    # Dismiss requires branch protection; fall back to editing the body
+                    try:
+                        github_api(
+                            "PUT",
+                            f"/repos/{repo}/pulls/{pr_number}/reviews/{r['id']}",
+                            token,
+                            {"body": "~~This review has been superseded by a newer review.~~"},
+                        )
+                    except urllib.error.HTTPError:
+                        pass
         page += 1
     print(f"Dismissed previous reviews on PR #{pr_number}")
 

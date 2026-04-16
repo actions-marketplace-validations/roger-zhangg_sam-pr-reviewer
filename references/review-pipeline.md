@@ -75,6 +75,7 @@ Re-check each surviving comment against the coding guidelines. Discard any that:
 For each final comment:
 1. Ensure any code examples are correct and follow best practices
 2. Remove code examples that make uncertain assumptions
-3. Format with markdown for clarity — use fenced code blocks for code
-4. Keep code examples brief yet clear
-5. Ensure the comment explains **why** the change is needed (concrete problem that could occur)
+3. Format with GitHub-flavored markdown — use fenced code blocks with language tags for code
+4. Use inline backticks for identifiers, file names, and short code references
+5. Keep code examples brief yet clear
+6. Ensure the comment explains **why** the change is needed (concrete problem that could occur)

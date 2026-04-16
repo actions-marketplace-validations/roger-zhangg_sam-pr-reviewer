@@ -111,10 +111,16 @@ Present results in this EXACT format (the post_review.py script parses this):
 ### Comments
 
 #### 1. [{CATEGORY}] `{file_path}:{line_number}`
-{comment text with markdown formatting and code examples}
+{comment text in GitHub-flavored markdown}
 
 ---
 ```
+
+Comment text MUST be valid GitHub-flavored markdown. Use:
+- Fenced code blocks with language tags (```python, ```yaml, etc.) for code examples
+- Inline code with backticks for identifiers, file names, and short code references
+- Bold, bullet points, and paragraphs for structure
+- Do NOT use ANSI escape codes, terminal formatting, or raw control characters
 
 If no issues found:
 ```

@@ -85,7 +85,7 @@ fi
 echo "Generating project structure..."
 find . -not -path './.git/*' -not -path './.sam-pr-reviewer/*' -not -path './.kiro/*' \
   -not -name '.git' -not -name '.sam-pr-reviewer' -not -name '.kiro' \
-  | head -500 | sort > "${REVIEW_DIR}/tree.txt"
+  -maxdepth 4 | sort > "${REVIEW_DIR}/tree.txt" || true
 
 # --- Build the prompt ---
 PROMPT_FILE=$(mktemp)

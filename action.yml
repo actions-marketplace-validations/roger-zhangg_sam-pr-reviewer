@@ -21,6 +21,10 @@ inputs:
     description: 'Path to a custom coding guidelines file (relative to repo root). Merged with built-in guidelines.'
     required: false
     default: ''
+  dismiss_previous:
+    description: 'Delete previous SAM PR Reviewer comments before posting new review.'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -32,4 +36,5 @@ runs:
         KIRO_API_KEY: ${{ inputs.kiro_api_key }}
         INPUT_TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
         INPUT_GUIDELINES_PATH: ${{ inputs.guidelines_path }}
+        INPUT_DISMISS_PREVIOUS: ${{ inputs.dismiss_previous }}
       run: ${{ github.action_path }}/entrypoint.sh

@@ -204,8 +204,54 @@ def get_diff_lines(token, repo, pr_number, commit_sha):
     return valid
 
 
+def dismiss_previous_reviews(repo, pr_number, token):
+    """Delete previous review comments from github-actions[bot]."""
+    page = 1
+    while True:
+        reviews = github_api(
+            "GET",
+            f"/repos/{repo}/pulls/{pr_number}/reviews?per_page=100&page={page}",
+            token,
+        )
+        if not reviews:
+            break
+        for r in reviews:
+            user = r.get("user", {})
+            if user.get("login") == "github-actions[bot]" and user.get("type") == "Bot":
+                # Delete inline comments for this review
+                try:
+                    comments = github_api(
+                        "GET",
+                        f"/repos/{repo}/pulls/{pr_number}/reviews/{r['id']}/comments",
+                        token,
+                    )
+                    for c in comments:
+                        try:
+                            github_api("DELETE", f"/repos/{repo}/pulls/comments/{c['id']}", token)
+                        except urllib.error.HTTPError:
+                            pass
+                except urllib.error.HTTPError:
+                    pass
+                # Dismiss the review itself (changes state to DISMISSED)
+                try:
+                    github_api(
+                        "PUT",
+                        f"/repos/{repo}/pulls/{pr_number}/reviews/{r['id']}/dismissals",
+                        token,
+                        {"message": "Superseded by new review."},
+                    )
+                except urllib.error.HTTPError:
+                    pass
+        page += 1
+    print(f"Dismissed previous reviews on PR #{pr_number}")
+
+
 def post_review(repo, pr_number, commit_sha, token, review_text):
     """Post a PR review with inline comments."""
+    # Dismiss previous reviews from this bot if requested
+    if os.environ.get("INPUT_DISMISS_PREVIOUS", "true").lower() == "true":
+        dismiss_previous_reviews(repo, pr_number, token)
+
     review_text = strip_ansi(review_text)
     review_text = extract_review(review_text)
     review_text = convert_xml_to_markdown(review_text)

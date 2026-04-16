@@ -67,6 +67,14 @@ python3 scripts/parse_diff.py --file path/to/file.py --from BASE_SHA --to HEAD_S
 
 The script outputs JSON with parsed diffs. If it returns an `error` key, report it in the output.
 
+### Cross-File Context
+
+When reviewing a diff hunk, you may need to understand the surrounding code (class hierarchy,
+function signatures, imports, etc.). The workspace contains the base branch version of all files.
+Use the `read` tool to open any source file for additional context. For example, if a diff adds
+a parameter to a subclass method, read the base class file to verify whether the abstract method
+also needs updating. Always verify your findings against the actual source before posting comments.
+
 ### Step 2: Load Coding Guidelines
 
 Read the built-in coding guidelines from `references/coding-guidelines.md`.

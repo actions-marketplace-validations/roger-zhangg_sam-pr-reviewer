@@ -41,6 +41,10 @@ For each comment, validate it against the actual code:
 1. Find and quote the specific diff lines relevant to the comment
 2. Pay attention to which lines are added (+) vs removed (-)
 3. Verify the comment identifies a legitimate, concrete issue
+4. **Read the actual source file** using the read tool to confirm your understanding.
+   Do not rely solely on the diff hunk — the hunk may lack context (e.g., class names,
+   surrounding methods). If your comment references code structure (inheritance, interfaces,
+   call sites), read the full file to verify before keeping the comment.
 
 **Discard** comments that:
 - Are incorrect or misunderstand the code

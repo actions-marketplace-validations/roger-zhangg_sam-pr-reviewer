@@ -144,7 +144,8 @@ def github_api(method, path, token, data=None):
     )
     try:
         with urllib.request.urlopen(req) as resp:
-            return json.loads(resp.read().decode())
+            body = resp.read().decode()
+            return json.loads(body) if body else None
     except urllib.error.HTTPError as e:
         error_body = e.read().decode() if e.fp else ""
         print(f"GitHub API error {e.code}: {error_body}", file=sys.stderr)

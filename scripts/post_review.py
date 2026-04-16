@@ -191,7 +191,6 @@ def get_diff_lines(token, repo, pr_number, commit_sha):
 def post_review(repo, pr_number, commit_sha, token, review_text):
     """Post a PR review with inline comments."""
     review_text = strip_ansi(review_text)
-    review_text = restore_code_fences(review_text)
     review_text = extract_review(review_text)
     review_text = sanitize_review_text(review_text)
     comments = parse_review(review_text)

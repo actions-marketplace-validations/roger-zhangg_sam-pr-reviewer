@@ -45,6 +45,9 @@ For each comment, validate it against the actual code:
    Do not rely solely on the diff hunk — the hunk may lack context (e.g., class names,
    surrounding methods). If your comment references code structure (inheritance, interfaces,
    call sites), read the full file to verify before keeping the comment.
+5. **Remember workspace files show the BEFORE state.** If you find something "missing" in a
+   workspace file, check ALL diff hunks in the PR to see if the PR already adds it. Do not
+   flag something as missing if the diff adds it in another hunk or file.
 
 **Discard** comments that:
 - Are incorrect or misunderstand the code

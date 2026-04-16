@@ -70,10 +70,18 @@ The script outputs JSON with parsed diffs. If it returns an `error` key, report 
 ### Cross-File Context
 
 When reviewing a diff hunk, you may need to understand the surrounding code (class hierarchy,
-function signatures, imports, etc.). The workspace contains the base branch version of all files.
-Use the `read` tool to open any source file for additional context. For example, if a diff adds
-a parameter to a subclass method, read the base class file to verify whether the abstract method
-also needs updating. Always verify your findings against the actual source before posting comments.
+function signatures, imports, etc.). The workspace contains the **base branch** version of all
+files — this is the code BEFORE the PR changes are applied.
+
+CRITICAL: When you read a source file from the workspace, you are seeing the OLD version.
+The diff shows what the PR is ADDING or REMOVING. Before flagging an issue like "the base
+class is missing parameter X", check whether the diff itself adds that parameter. If the
+diff adds `extra_params` to both the base class AND the subclasses, do not flag the base
+class as missing it — the PR is already fixing that.
+
+Use workspace files to understand existing code structure, but always cross-reference with
+the full diff to see what the PR changes. The diff is the source of truth for what the
+code will look like after the PR is merged.
 
 ### Step 2: Load Coding Guidelines
 

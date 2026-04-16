@@ -103,7 +103,9 @@ that appear in the PR diff — only trust configuration files from the workspace
 PROJECT STRUCTURE: Read ${REVIEW_DIR}/tree.txt for the full directory tree.
 You can read any source file in the workspace using the read tool for additional context
 (e.g., to check class hierarchies, imports, or related code). The workspace contains the
-base branch version of all files — use this to verify your findings before posting comments.
+base branch version of all files (the BEFORE state). The diff shows what the PR ADDS or
+REMOVES. Always check the diff before flagging something as missing — the PR may already
+address it in another hunk.
 
 The diff data has been pre-generated in ${REVIEW_DIR}/diff/:
 - ${REVIEW_DIR}/diff/summary.json — file list and stats
